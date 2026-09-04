@@ -1,77 +1,77 @@
-import ompl.base as ob [cite: 182]
-import ompl.control as oc [cite: 183]
+import ompl.base as ob 
+import ompl.control as oc 
 
-def is_state_valid(state): [cite: 184]
-    # Placeholder collision checker [cite: 185]
-    return True [cite: 186]
+def is_state_valid(state): 
+    # Placeholder collision checker 
+    return True 
 
-def propagate(start, control, duration, result): [cite: 187]
-    # UAV state: [x, y, dx, dy] control: [ax, ay] [cite: 188]
-    x = start[0] [cite: 189]
-    y = start[1] [cite: 190, 191]
-    dx = start[2] [cite: 192]
-    dy = start[3] [cite: 193]
-    ax = control[0] [cite: 194]
-    ay = control[1] [cite: 195]
-    dt = duration [cite: 196]
+def propagate(start, control, duration, result): 
+    # UAV state: [x, y, dx, dy] control: [ax, ay] 
+    x = start[0] 
+    y = start[1] 
+    dx = start[2] 
+    dy = start[3] 
+    ax = control[0] 
+    ay = control[1] 
+    dt = duration 
 
-    new_x = x + dx * dt + 0.5 * ax * dt**2 [cite: 197]
-    new_y = y + dy * dt + 0.5 * ay * dt**2 [cite: 198]
-    new_dx = dx + ax * dt [cite: 199]
-    new_dy = dy + ay * dt [cite: 200]
+    new_x = x + dx * dt + 0.5 * ax * dt**2 
+    new_y = y + dy * dt + 0.5 * ay * dt**2 
+    new_dx = dx + ax * dt 
+    new_dy = dy + ay * dt 
 
-    result[0] = new_x [cite: 201, 202]
-    result[1] = new_y [cite: 203, 205]
-    result[2] = new_dx [cite: 206, 207]
-    result[3] = new_dy [cite: 208]
+    result[0] = new_x 
+    result[1] = new_y 
+    result[2] = new_dx 
+    result[3] = new_dy 
 
-def plan_kinodynamic_rrt_star(start_vals, goal_vals): [cite: 209]
-    space = ob.RealVectorStateSpace(4) # [x,y,dx,dy] [cite: 210]
-    bounds = ob.RealVectorBounds(4) [cite: 211]
-    bounds.setLow(0, 0.0); bounds.setHigh(0, 50.0) # x bounds [cite: 212]
-    bounds.setLow(1, 0.0); bounds.setHigh(1, 50.0) # y bounds [cite: 213, 214, 215]
-    bounds.setLow(2, -5.0); bounds.setHigh(2, 5.0) # dx bounds [cite: 216, 217, 218]
-    bounds.setLow(3, -5.0); bounds.setHigh(3, 5.0) # dy bounds [cite: 219, 220, 221]
-    space.setBounds(bounds) [cite: 222]
+def plan_kinodynamic_rrt_star(start_vals, goal_vals): 
+    space = ob.RealVectorStateSpace(4) # [x,y,dx,dy] 
+    bounds = ob.RealVectorBounds(4) 
+    bounds.setLow(0, 0.0); bounds.setHigh(0, 50.0) # x bounds 
+    bounds.setLow(1, 0.0); bounds.setHigh(1, 50.0) # y bounds 
+    bounds.setLow(2, -5.0); bounds.setHigh(2, 5.0) # dx bounds 
+    bounds.setLow(3, -5.0); bounds.setHigh(3, 5.0) # dy bounds 
+    space.setBounds(bounds) 
 
-    control_space = oc.RealVectorControlSpace(space, 2) # ax, ay [cite: 223, 224]
-    control_bounds = ob.RealVectorBounds(2) [cite: 225, 226]
-    control_bounds.setLow(-1.0) [cite: 227]
-    control_bounds.setHigh(1.0) [cite: 228]
-    control_space.setBounds(control_bounds) [cite: 229]
+    control_space = oc.RealVectorControlSpace(space, 2) # ax, ay 
+    control_bounds = ob.RealVectorBounds(2) 
+    control_bounds.setLow(-1.0) 
+    control_bounds.setHigh(1.0) 
+    control_space.setBounds(control_bounds) 
 
-    si = oc.SpaceInformation(space, control_space) [cite: 230]
-    si.setPropagationStepSize(0.1) [cite: 231]
-    si.setMinMaxControlDuration(1, 10) [cite: 232]
-    si.setStateValidityChecker(ob.StateValidityCheckerFn(is_state_valid)) [cite: 233]
+    si = oc.SpaceInformation(space, control_space) 
+    si.setPropagationStepSize(0.1) 
+    si.setMinMaxControlDuration(1, 10) 
+    si.setStateValidityChecker(ob.StateValidityCheckerFn(is_state_valid)) 
 
-    def state_propagator(start, control, duration, result): [cite: 234]
-        propagate(start, control, duration, result) [cite: 235]
-    si.setStatePropagator(oc.StatePropagatorFn(state_propagator)) [cite: 236]
+    def state_propagator(start, control, duration, result): 
+        propagate(start, control, duration, result) 
+    si.setStatePropagator(oc.StatePropagatorFn(state_propagator)) 
 
-    ss = oc.SimpleSetup(si) [cite: 237]
-    start = ob.State(space) [cite: 238]
-    for i in range(4): [cite: 239]
-        start[i] = start_vals[i] [cite: 241]
-    goal = ob.State(space) [cite: 240, 242]
-    for i in range(4): [cite: 243]
-        goal[i] = goal_vals[i] [cite: 244]
+    ss = oc.SimpleSetup(si) 
+    start = ob.State(space) 
+    for i in range(4): 
+        start[i] = start_vals[i] 
+    goal = ob.State(space) 
+    for i in range(4): 
+        goal[i] = goal_vals[i] 
 
-    ss.setStartAndGoalStates(start, goal, 0.5) [cite: 245]
-    planner = oc.KinodynamicRRTstar(si) [cite: 246]
-    ss.setPlanner(planner) [cite: 247]
+    ss.setStartAndGoalStates(start, goal, 0.5) 
+    planner = oc.KinodynamicRRTstar(si) 
+    ss.setPlanner(planner) 
 
-    solved = ss.solve(10.0) [cite: 248, 249]
-    if solved: [cite: 250]
-        print("Found solution:") [cite: 251]
-        path = ss.getSolutionPath() [cite: 252]
-        path.printAsMatrix() [cite: 253]
-        return path [cite: 254]
-    else: [cite: 255]
-        print("No solution found.") [cite: 256]
-        return None [cite: 257]
+    solved = ss.solve(10.0) 
+    if solved: 
+        print("Found solution:") 
+        path = ss.getSolutionPath() 
+        path.printAsMatrix() 
+        return path 
+    else: 
+        print("No solution found.") 
+        return None 
 
-if __name__ == "__main__": [cite: 258, 259, 260]
-    start = [0.0, 0.0, 0.0, 0.0] [cite: 261, 262]
-    goal = [40.0, 40.0, 0.0, 0.0] [cite: 263, 264]
-    plan_kinodynamic_rrt_star(start, goal) [cite: 265]
+if __name__ == "__main__": 
+    start = [0.0, 0.0, 0.0, 0.0] 
+    goal = [40.0, 40.0, 0.0, 0.0] 
+    plan_kinodynamic_rrt_star(start, goal) 
