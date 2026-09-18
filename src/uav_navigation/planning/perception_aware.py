@@ -73,7 +73,7 @@ class PerceptionAwareKinodynamicPlanner:
             return None 
 
 if __name__ == "__main__": [cite: 306]
-    planner = PerceptionAwareKinodynamicPlanner() [cite: 306]
-    start = [0.0, 0.0, 0.0, 0.0] [cite: 306]
-    goal = [40.0, 40.0, 0.0, 0.0] [cite: 306]
-    planner.plan(start, goal) [cite: 306]
+    planner = PerceptionAwareKinodynamicPlanner()
+    start = [0.0, 0.0, 0.0, 0.0] 
+    goal = [40.0, 40.0, 0.0, 0.0]
+    planner.plan(start, goal)
